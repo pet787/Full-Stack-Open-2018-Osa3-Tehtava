@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+var morgan = require('morgan')
+
+app.use(morgan('tiny'));
 
 app.use(bodyParser.json())
 
@@ -76,14 +79,14 @@ app.post('/api/persons', (req, res) => {
     number: body.number
   };
   if (!newPerson.name) {
-    return res.status( 400 ).json( { error: 'name missing' } ) ;
+    return res.status( 400 ).json( { error: 'Name missing' } ) ;
   };
   if (!newPerson.number) {
-    return res.status( 400 ).json( { error: 'number missing' } ); 
+    return res.status( 400 ).json( { error: 'Number missing' } ); 
   };
   exists = persons.find(person => person.name === newPerson.name);
   if (exists) {
-    return res.status( 400 ).json( { error: 'name must be unique' } ); 
+    return res.status( 400 ).json( { error: 'Name must be unique' } ); 
   }
   console.log('person', newPerson);
   persons = persons.concat(newPerson);
