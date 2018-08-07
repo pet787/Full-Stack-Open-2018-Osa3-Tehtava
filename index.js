@@ -2,8 +2,17 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 var morgan = require('morgan')
+const cors = require('cors')
 
-app.use(morgan('tiny'));
+app.use(cors())
+
+morgan.token('body', function getBody(req) { 
+  return JSON.stringify( req.body ) 
+})
+
+app.use(
+  morgan(':method :url :body :status :res[content-length] - :response-time ms')
+)
 
 app.use(bodyParser.json())
 
@@ -71,7 +80,6 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
-  console.log('post body', body);
   const randomId = randomBetween(100000000000, 999999999999);
   const newPerson = {
     id : randomId,
@@ -88,9 +96,8 @@ app.post('/api/persons', (req, res) => {
   if (exists) {
     return res.status( 400 ).json( { error: 'Name must be unique' } ); 
   }
-  console.log('person', newPerson);
   persons = persons.concat(newPerson);
-  res.status(200).end();
+  res.json(newPerson);
 })
       
 app.delete('/api/persons/:id', (req, res) => {
