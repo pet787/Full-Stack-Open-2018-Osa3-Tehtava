@@ -16,15 +16,15 @@ app.use(
   morgan(':method :url :body :status :res[content-length] - :response-time ms')
 )
 
-const formatPerson = (person) => {
-  console.log('formatPerson', person)
+/* const formatPerson = (person) => {
   return {
     name: person.name,
     number: person.number,
-    id: person._id
+    id: person.id
   }
 }
-
+ */
+// ROOT
 app.get('/', (req, res) => {
   res.send('REST API: /api/persons');
 })
@@ -34,7 +34,9 @@ app.get('/api/persons', (req, res) => {
   Person
   .find({})
   .then(persons => {
-    res.json(persons.map(formatPerson))
+    res.json(persons.map(person => person))
+    //res.json(persons.map(Person.format))
+    //res.json(persons.map(formatPerson))
   })
 })
 
@@ -44,7 +46,7 @@ app.get('/api/persons/:id', (req, res) => {
   .findById(req.params.id)
   .then(person => {
     if (person) {
-      res.json(formatPerson(person))
+      res.json(person)
     } else {
       res.status(404).end()
     }
@@ -58,7 +60,6 @@ app.get('/api/persons/:id', (req, res) => {
 // POST
 app.post('/api/persons', (req, res) => {
   const body = req.body
-  console.log(req)
 
   const person = new Person({
     name: body.name,
@@ -78,9 +79,8 @@ app.post('/api/persons', (req, res) => {
  */
   person
   .save()
-  .then(formatPerson)
-  .then(savedAndFormattedPerson => {
-    res.json(savedAndFormattedPerson)
+  .then(person => {
+    res.json(person)
   })
 })
       
@@ -101,13 +101,12 @@ app.get('/info', (req, res) => {
   res.send(info());
 })
 
-  // NOT HANDLED ROUTE
-  /* const error = (req, res) => {
+// NOT HANDLED ROUTE
+const error = (req, res) => {
     res.status(404).send({error: 'unknown endpoint'})
-  }
+}
 
-  app.use(error)
- */
+app.use(error)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
