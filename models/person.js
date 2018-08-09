@@ -4,12 +4,12 @@ if ( process.env.NODE_ENV !== 'production' ) {
   require('dotenv').config()
 }
 
-const url = process.env.MONGODB_URI_1
+const url = process.env.MONGO_URL
 
 mongoose.connect(url, { useNewUrlParser: true } )
 
 const personSchema = new mongoose.Schema({
-    name: { type: String, unique : true } ,
+    name: { type: String } ,
     number: String,
 })
 
@@ -22,7 +22,7 @@ personSchema.statics.format = function(person) {
     }
 }
 
-// 3.14 Vaihtoehto ratkaisu
+// 3.14 Vaihtoehtoinen ratkaisu
 personSchema.set('toJSON', {
     transform: function (doc, ret, options) {
         ret.id = ret._id;
