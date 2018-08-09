@@ -16,14 +16,6 @@ app.use(
   morgan(':method :url :body :status :res[content-length] - :response-time ms')
 )
 
-/* const formatPerson = (person) => {
-  return {
-    name: person.name,
-    number: person.number,
-    id: person.id
-  }
-}
- */
 // ROOT
 app.get('/', (req, res) => {
   res.send('REST API: /api/persons');
@@ -36,8 +28,7 @@ app.get('/api/persons', (req, res) => {
   .find({})
   .then(persons => {
     res.json(persons.map(person => person))
-    //res.json(persons.map(Person.format))
-    //res.json(persons.map(formatPerson))
+    //res.json(persons.map(Person.format)) <-- TÄSSÄ 3.14
   })
 })
 
@@ -74,15 +65,6 @@ app.post('/api/persons', (req, res) => {
   if (!person.number) {
     return res.status( 400 ).json( { error: 'Number missing' } ); 
   };
-  // If name exists, return error
-/*   Person
-  .findOne({ name : person.name })
-  .then(person => {
-    if (person) {
-      res.status(404).end()
-    }
-  }) */
-  // Add name, number
   person
   .save()
   .then(person => {
@@ -124,7 +106,13 @@ app.delete('/api/persons/:id', (req, res) => {
 
 // GET INFO
 app.get('/info', (req, res) => {
-  res.send(info());
+  Person
+  .find({})
+  .then(persons => {
+    res.status(200).send(
+      'Puhelinluettelossa ' + persons.length + ' henkilön tiedot'
+    );
+  })
 })
 
 // NOT HANDLED ROUTE
