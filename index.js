@@ -30,6 +30,10 @@ app.get('/api/persons', (req, res) => {
     res.json(persons.map(person => person))
     //res.json(persons.map(Person.format)) <-- TÄSSÄ 3.14
   })
+  .catch(error => {
+    console.log(error)
+    res.status(400).send({ error: 'app.get all' })
+  })
 })
 
 // GET ONE
@@ -65,10 +69,25 @@ app.post('/api/persons', (req, res) => {
   if (!person.number) {
     return res.status( 400 ).json( { error: 'Number missing' } ); 
   };
-  person
-  .save()
-  .then(person => {
-    res.json(person)
+  Person
+  .findOne( {name : person.name } )
+  .then(personExists => {
+    if (personExists) {     
+      // Name already exists 
+      return res.status( 400 ).json( { error: 'Name exists, name must be unique' } ); 
+    }
+    else {
+      // Add new person
+      person
+      .save()
+      .then(newPerson => {
+        res.json(newPerson)
+      })
+    }
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(400).send({ error: 'app.post' })
   })
 })
       
@@ -112,6 +131,9 @@ app.get('/info', (req, res) => {
     res.status(200).send(
       'Puhelinluettelossa ' + persons.length + ' henkilön tiedot'
     );
+  })
+  .catch(error => {
+    res.status(400).send({ error: 'app.get info find' })
   })
 })
 

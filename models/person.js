@@ -9,7 +9,7 @@ const url = process.env.MONGODB_URI_1
 mongoose.connect(url, { useNewUrlParser: true } )
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: { type: String, unique : true } ,
     number: String,
 })
 
