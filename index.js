@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 
 // GET ALL
 app.get('/api/persons', (req, res) => {
+  console.log( 'app.get all' )
   Person
   .find({})
   .then(persons => {
@@ -42,6 +43,7 @@ app.get('/api/persons', (req, res) => {
 
 // GET ONE
 app.get('/api/persons/:id', (req, res) => {
+  console.log( 'app.get', req.params.id )
   Person
   .findById(req.params.id)
   .then(person => {
@@ -65,18 +67,22 @@ app.post('/api/persons', (req, res) => {
     name: body.name,
     number: body.number
   })
-
+  console.log( 'app.post', person )
   if (!person.name) {
     return res.status( 400 ).json( { error: 'Name missing' } ) ;
   };
   if (!person.number) {
     return res.status( 400 ).json( { error: 'Number missing' } ); 
   };
-/*   exists = persons.find(person => person.name === newPerson.name);
-  if (exists) {
-    return res.status( 400 ).json( { error: 'Name must be unique' } ); 
-  }
- */
+  // If name exists, return error
+/*   Person
+  .findOne({ name : person.name })
+  .then(person => {
+    if (person) {
+      res.status(404).end()
+    }
+  }) */
+  // Add name, number
   person
   .save()
   .then(person => {
@@ -84,8 +90,28 @@ app.post('/api/persons', (req, res) => {
   })
 })
       
+// PUT
+app.put('/api/persons/:id', (req, res) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+  console.log('app.put', req.params.id, person)
+  Person
+  .findByIdAndUpdate(req.params.id, person, { new: true } )
+  .then(person => {
+    res.json(person)
+  })
+  .catch(error => {
+    res.status(400).send({ error: 'malformatted id' })
+  })
+})
+
 // DELETE
 app.delete('/api/persons/:id', (req, res) => {
+  console.log( 'app.delete', req.params.id )
   Person
   .findByIdAndRemove(req.params.id)
   .then(result => {

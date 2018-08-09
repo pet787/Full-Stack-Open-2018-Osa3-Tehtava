@@ -8,10 +8,6 @@ const url = process.env.MONGODB_URI_1
 
 mongoose.connect(url, { useNewUrlParser: true } )
 
-function getId(person) {
-    return person._id;
-}
-
 const personSchema = new mongoose.Schema({
     name: String,
     number: String,
