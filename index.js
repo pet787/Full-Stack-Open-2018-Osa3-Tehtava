@@ -9,8 +9,8 @@ const Person = require('./models/person');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('build'));
-morgan.token('body', function getBody(req) { 
-  return JSON.stringify( req.body ); 
+morgan.token('body', function getBody(req) {
+  return JSON.stringify( req.body );
 });
 app.use(
   morgan(':method :url :body :status :res[content-length] - :response-time ms')
@@ -67,14 +67,14 @@ app.post('/api/persons', (req, res) => {
     return res.status( 400 ).json( { error: 'Name missing' } ) ;
   }
   if (!person.number) {
-    return res.status( 400 ).json( { error: 'Number missing' } ); 
+    return res.status( 400 ).json( { error: 'Number missing' } );
   }
   Person
-    .findOne( {name : person.name } )
+    .findOne( { name : person.name } )
     .then(personExists => {
-      if (personExists) {     
-        // Name already exists 
-        return res.status( 400 ).json( { error: 'Name exists, name must be unique' } ); 
+      if (personExists) {
+        // Name already exists
+        return res.status( 400 ).json( { error: 'Name exists, name must be unique' } );
       }
       else {
         // Add new person
@@ -90,7 +90,7 @@ app.post('/api/persons', (req, res) => {
       res.status(400).send({ error: 'app.post' });
     });
 });
-      
+
 // PUT
 app.put('/api/persons/:id', (req, res) => {
   const body = req.body;
@@ -139,7 +139,7 @@ app.get('/info', (req, res) => {
 
 // NOT HANDLED ROUTE
 const error = (req, res) => {
-  res.status(404).send({error: 'unknown endpoint'});
+  res.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(error);
