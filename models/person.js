@@ -13,12 +13,11 @@ function getId(person) {
 }
 
 const personSchema = new mongoose.Schema({
-    ids : {type: String, get: getId },
     name: String,
     number: String,
 })
 
-// 3.14 Asked answer
+// 3.14 Pyydetty vastaus
 personSchema.statics.format = function(person) {
     return { 
         name: person.name, 
@@ -27,7 +26,7 @@ personSchema.statics.format = function(person) {
     }
 }
 
-// 3.14 Alternative
+// 3.14 Vaihtoehto ratkaisu
 personSchema.set('toJSON', {
     transform: function (doc, ret, options) {
         ret.id = ret._id;
